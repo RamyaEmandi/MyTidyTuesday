@@ -1,0 +1,75 @@
+---
+title: "TidyTuesdayWeek4_2021"
+author: "Ramya Emandi"
+date: "20/01/2021"
+output: html_document
+---
+
+###Data
+The data this week comes from rKenyaCensus courtesy of Shelmith Kariuki. Shelmith wrote about these datasets on her blog. 
+
+```{r setup, include=FALSE}
+library("remotes")
+#library(tidytuesdayR)
+library(ggplot2)
+library(scales)
+library(caTools)
+library(randomForest)
+library(caret)
+library(e1071)
+
+remotes::install_github("Shelmith-Kariuki/rKenyaCensus")
+
+gender <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-19/gender.csv')
+crops <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-19/crops.csv')
+households <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-01-19/households.csv')
+
+#tuesdata <- tidytuesdayR::tt_load('2021-01-19')
+#tuesdata <- tidytuesdayR::tt_load(2021, week = 4)
+
+View(crops)
+View(gender)
+View(households)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Viewing the other datasets under rKenyaCensus
+```{r}
+library(tidyverse)
+# create a markdown table for the readme
+rKenyaCensus::DataCatalogue %>% 
+  knitr::kable()
+
+county <- rKenyaCensus::V3_T1.2
+View(county)
+#urban <- rKenyaCensus::V2_T2.5
+#View(urban)
+school <- rKenyaCensus::V4_T2.3
+View(school)
+#croptype <-rKenyaCensus::V4_T2.21
+#View(croptype)
+online <-rKenyaCensus::V4_T2.34
+View(online)
+land <- rKenyaCensus::V1_T2.4
+View(land)
+```
+ggplot
+```{r}
+library(dplyr)
+library(ggrepel)
+Plot1 <- dplyr::bind_cols(land,crops)
+#ggplot(Plot1, aes(x=`LandArea(in Sq. Km)`, y = Farming, size = `Population Density(No. per Sq. Km)`)) + geom_point(position = "jitter", color = "blue") + coord_cartesian(xlim = c(-10000,75000), ylim = c(0,400000)) + scale_size(range = c(.1, 14)) + geom_text(aes(label=ifelse(Farming>100000,as.character(County),'')),hjust=0, vjust=0)
+ggplot(Plot1, aes(x=`LandArea(in Sq. Km)`, y = Farming, size = `Population Density(No. per Sq. Km)`, title(main = "Graph designed by Ramya Emandi", sub = "Data Source - Shelmith-Kariuki/rKenyaCensus"))) + geom_point(position = "jitter", color = "blue") + coord_cartesian(xlim = c(-10000,75000), ylim = c(0,400000)) + scale_size(range = c(.1, 14)) + geom_label_repel(aes(label=ifelse(Farming>200000,as.character(County),''),
+                  box.padding   = 0.2, 
+                  point.padding = 0.2,
+                  segment.color = 'grey50'))
+
+
+
+#ggplot(Plot1, aes(x=`LandArea(in Sq. Km)`, y = Farming, size = `Population Density(No. per Sq. Km)`)) + geom_point(position = "jitter", color = "blue") + coord_cartesian(xlim = c(-10000,75000), ylim = c(0,400000)) + scale_size(range = c(.1, 14))
+```
+
+
+## R Markdown
+
